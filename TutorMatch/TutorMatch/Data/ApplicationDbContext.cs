@@ -12,14 +12,15 @@ namespace TutorMatch.Data
 			{
 			}
 
-		// Adicionando DbSet para a entidade Aula
+		// Adicionando DbSet para as entidades
 		public DbSet<Aula> Aulas { get; set; }
+		public DbSet<InscricaoAula> InscricoesAula { get; set; } // Novo DbSet
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 			{
 			base.OnModelCreating(modelBuilder);
 
-			// Configurando os tipos de dados para o PostgreSQL
+			// Configuração para PostgreSQL
 			modelBuilder.Entity<User>()
 				.Property(u => u.Id)
 				.HasColumnType("varchar(450)");
@@ -68,23 +69,39 @@ namespace TutorMatch.Data
 				.Property(t => t.UserId)
 				.HasColumnType("varchar(450)");
 
-			// Configurando a entidade Aula
+			// Configuração da entidade Aula
 			modelBuilder.Entity<Aula>()
 				.Property(a => a.Id)
 				.ValueGeneratedOnAdd();
 
 			modelBuilder.Entity<Aula>()
 				.Property(a => a.NomeDaAula)
-				.HasColumnType("varchar(255)"); // ajuste conforme necessário
+				.HasColumnType("varchar(255)");
 
 			modelBuilder.Entity<Aula>()
 				.Property(a => a.LinkDaAula)
-				.HasColumnType("varchar(2048)"); // ajuste conforme necessário
+				.HasColumnType("varchar(2048)");
 
 			modelBuilder.Entity<Aula>()
 				.HasOne(a => a.Professor)
-				.WithMany() // Caso um professor possa ter várias aulas
-				.HasForeignKey(a => a.ProfessorId); // Definindo a chave estrangeira
+				.WithMany()
+				.HasForeignKey(a => a.ProfessorId);
+
+			// Configuração da entidade InscricaoAula
+			modelBuilder.Entity<InscricaoAula>()
+				.HasKey(ia => ia.Id);
+
+			modelBuilder.Entity<InscricaoAula>()
+				.HasOne(ia => ia.User)
+				.WithMany()
+				.HasForeignKey(ia => ia.UserId)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			modelBuilder.Entity<InscricaoAula>()
+				.HasOne(ia => ia.Aula)
+				.WithMany()
+				.HasForeignKey(ia => ia.AulaId)
+				.OnDelete(DeleteBehavior.Cascade);
 			}
 		}
 	}

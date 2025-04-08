@@ -33,6 +33,18 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Política de Privacidade</a>
                         </li>
+                        @using Microsoft.AspNetCore.Identity
+                        @inject UserManager<TutorMatch.Models.User> UserManager
+                        @if (User.Identity.IsAuthenticated)
+                            {
+                            var currentUser = await UserManager.GetUserAsync(User);
+                            if (currentUser != null && currentUser.UserType == "Aluno")
+                                {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Inscricoes" asp-action="MinhasInscricoes">Minhas Aulas</a>
+                                </li>
+                                }
+                            }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

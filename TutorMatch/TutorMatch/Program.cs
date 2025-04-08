@@ -5,7 +5,7 @@ using TutorMatch.Models; // Certifique-se de que a classe User está aqui
 using Microsoft.Extensions.Configuration;
 
 namespace TutorMatch;
-public class Program
+public static class Program
 	{
 	public static async Task Main(string[] args)
 		{
