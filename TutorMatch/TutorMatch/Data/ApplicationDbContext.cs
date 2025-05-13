@@ -16,6 +16,7 @@ namespace TutorMatch.Data
 		public DbSet<Aula> Aulas { get; set; }
 		public DbSet<InscricaoAula> InscricoesAula { get; set; } // Novo DbSet
 
+
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 			{
 			base.OnModelCreating(modelBuilder);
@@ -69,6 +70,7 @@ namespace TutorMatch.Data
 				.Property(t => t.UserId)
 				.HasColumnType("varchar(450)");
 
+
 			// Configuração da entidade Aula
 			modelBuilder.Entity<Aula>()
 				.Property(a => a.Id)
@@ -76,6 +78,7 @@ namespace TutorMatch.Data
 
 			modelBuilder.Entity<Aula>()
 				.Property(a => a.NomeDaAula)
+
 				.HasColumnType("varchar(255)");
 
 			modelBuilder.Entity<Aula>()
@@ -102,6 +105,7 @@ namespace TutorMatch.Data
 				.WithMany()
 				.HasForeignKey(ia => ia.AulaId)
 				.OnDelete(DeleteBehavior.Cascade);
+
 			}
 		}
 	}
