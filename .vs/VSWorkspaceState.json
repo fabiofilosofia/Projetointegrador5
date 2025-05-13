@@ -1,7 +1,11 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\TutorMatch",
+    "\\TutorMatch\\TutorMatch",
+    "\\TutorMatch\\TutorMatch\\Areas\\Identity",
+    "\\TutorMatch\\TutorMatch\\Areas\\Identity\\Pages"
   ],
-  "SelectedNode": "\\C:\\Users\\Rodrigo_Freire\\Source\\Repos\\PI2-tutor-match-platform",
+  "SelectedNode": "\\TutorMatch\\TutorMatch\\Program.cs",
   "PreviewInSolutionExplorer": false
 }

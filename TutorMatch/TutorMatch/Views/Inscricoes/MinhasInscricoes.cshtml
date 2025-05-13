@@ -1,0 +1,42 @@
+﻿@model IEnumerable<TutorMatch.Models.InscricaoAula>
+
+@{
+	ViewData["Title"] = "Minhas Inscrições";
+}
+
+<h1>Minhas Inscrições</h1>
+
+@if (!Model.Any())
+	{
+	<p>Você ainda não se inscreveu em nenhuma aula.</p>
+	}
+else
+	{
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Aula</th>
+				<th>Data da Aula</th>
+				<th>Horário</th>
+				<th>Professor</th>
+				<th>Data da Incrição</th>
+				<th>Ações</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var inscricao in Model)
+				{
+				<tr>
+					<td>@inscricao.Aula.NomeDaAula</td>
+					<td>@inscricao.Aula.Data.ToString("dd/MM/yyyy")</td>
+					<td>@inscricao.Aula.Hora</td>
+					<td>@inscricao.Aula.Professor.Name</td>
+					<td>@inscricao.DataInscricao.ToString("dd/MM/yyyy")</td>
+					<td>
+						<a asp-action="Cancelar" asp-route-inscricaoId="@inscricao.Id" class="btn btn-danger btn-sm" aria-label="Cancelar inscrição na aula @inscricao.Aula.NomeDaAula">Cancelar</a>
+					</td>
+				</tr>
+				}
+		</tbody>
+	</table>
+	}

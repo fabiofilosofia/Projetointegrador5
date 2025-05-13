@@ -1,23 +1,25 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TutorMatch.Data;
-using TutorMatch.Models; // Certifique-se de que a classe User está aqui
+using TutorMatch.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.OpenApi.Models; // Adicionado para o Swagger
 
 namespace TutorMatch;
-public class Program
+
+public static class Program
 	{
 	public static async Task Main(string[] args)
 		{
 		var builder = WebApplication.CreateBuilder(args);
 
-		// Adicionar suporte para variáveis de ambiente
+		// Adicionar suporte para variáveis de ambiente (original)
 		builder.Configuration
 			.SetBasePath(Directory.GetCurrentDirectory())
 			.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-			.AddEnvironmentVariables(); // Isso permite usar as variáveis de ambiente
+			.AddEnvironmentVariables();
 
-		// Recuperar a connection string de uma variável de ambiente ou do appsettings.json
+		// Recuperar a connection string (original)
 		var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
 			?? $"Host={Environment.GetEnvironmentVariable("DB_HOST")};" +
 			   $"Username={Environment.GetEnvironmentVariable("DB_USER")};" +
@@ -29,50 +31,59 @@ public class Program
 			throw new InvalidOperationException("Connection string 'DefaultConnection' or environment variable 'DB_CONNECTION_STRING' not found.");
 			}
 
-		// Configurar o contexto de banco de dados
+		// Configurar o contexto de banco de dados (original)
 		builder.Services.AddDbContext<ApplicationDbContext>(options =>
-			options.UseNpgsql(connectionString)); // UseNpgsql se estiver usando PostgreSQL
+			options.UseNpgsql(connectionString));
 
 		builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-		// Configurar o Identity para usar a classe User
+		// Configurar o Identity (original)
 		builder.Services.AddIdentity<User, IdentityRole>(options =>
 		{
-			// Configurações de senha
 			options.Password.RequireDigit = true;
 			options.Password.RequiredLength = 6;
 			options.Password.RequireNonAlphanumeric = false;
 			options.Password.RequireUppercase = false;
 			options.Password.RequireLowercase = true;
-
-			// Configurações de bloqueio
 			options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
 			options.Lockout.MaxFailedAccessAttempts = 5;
 			options.Lockout.AllowedForNewUsers = true;
-
-			// Configurações de usuário
 			options.User.RequireUniqueEmail = true;
 		})
 		.AddEntityFrameworkStores<ApplicationDbContext>()
 		.AddDefaultTokenProviders();
 
-		// Configurar autenticação via cookie
+		// Configurar autenticação via cookie (original)
 		builder.Services.ConfigureApplicationCookie(options =>
 		{
 			options.LoginPath = "/Account/Login";
 			options.AccessDeniedPath = "/Account/AccessDenied";
 		});
 
-		// Adicione os serviços necessários para Razor Pages e MVC
+		// Serviços para Razor Pages e MVC (original)
 		builder.Services.AddRazorPages();
 		builder.Services.AddControllersWithViews();
 
+		// ============= ADIÇÕES PARA O SWAGGER =============
+		builder.Services.AddEndpointsApiExplorer();
+		builder.Services.AddSwaggerGen(c =>
+		{
+			c.SwaggerDoc("v1", new OpenApiInfo
+				{
+				Title = "TutorMatch API",
+				Version = "v1"
+				});
+		});
+
 		var app = builder.Build();
 
-		// Configure o pipeline de requisições HTTP.
+		// Pipeline de requisições HTTP (original)
 		if (app.Environment.IsDevelopment())
 			{
 			app.UseMigrationsEndPoint();
+			// ============= ADIÇÕES PARA O SWAGGER =============
+			app.UseSwagger();
+			app.UseSwaggerUI();
 			}
 		else
 			{
@@ -82,30 +93,21 @@ public class Program
 
 		app.UseHttpsRedirection();
 		app.UseStaticFiles();
-
 		app.UseRouting();
-
-		// Adicionar autenticação e autorização
 		app.UseAuthentication();
 		app.UseAuthorization();
 
+		// Rotas originais (mantidas intactas)
 		app.MapRazorPages();
 		app.MapControllerRoute(
 			name: "default",
 			pattern: "{controller=Home}/{action=Index}/{id?}");
 
-		// Mapeando a rota para o controlador de teste de banco de dados
 		app.MapControllerRoute(
 			name: "dbTest",
 			pattern: "DatabaseTest",
 			defaults: new { controller = "DatabaseTest", action = "Index" });
 
-		// Mapeando a rota padrão para controladores MVC
-		app.MapControllerRoute(
-			name: "default",
-			pattern: "{controller=Home}/{action=Index}/{id?}");
-
-		// Iniciar o aplicativo
 		await app.RunAsync();
 		}
 	}
