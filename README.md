@@ -4,7 +4,7 @@
 
 ## Objetivos
 
-- Conectar alunos e professores no CEU Parque Bristol.
+- Conectar alunos e professores no CEU Parque Bristol e agora também os alunos da EE Conde José Vicente de Azevedo.
 - Facilitar a criação e gerenciamento de aulas e eventos.
 - Proporcionar uma interface acessível para todos os usuários.
 
